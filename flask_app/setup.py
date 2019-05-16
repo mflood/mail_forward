@@ -9,4 +9,7 @@ setup(name='mail_forward_flask',
       author_email='matthew.data.flood@gmail.com',
       url='https://www.github.com/mflood/',
       packages=['mail_forward_flask'],
+      install_requires=[
+          'html2text',
+      ],
      )
