@@ -23,6 +23,8 @@ def index():
     logger.debug("Rendering index.html")
     return render_template('index.html')
 
-if __name__ == "__main__":
-
-    app.run(host='127.0.0.1', port=5000)
+# Uncomment this if you want to invoke the app
+# using:
+#   python mail_forward_flask/__init__.py
+#if __name__ == "__main__":
+#    app.run(host='127.0.0.1', port=5000)

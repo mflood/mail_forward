@@ -1,4 +1,5 @@
 flask
 gunicorn
 pytest
+coverage
 html2text
