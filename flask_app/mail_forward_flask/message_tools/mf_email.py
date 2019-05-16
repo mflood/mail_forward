@@ -8,7 +8,7 @@
 """
 import json
 from json.decoder import JSONDecodeError
-from mail_forward_flask.message_tools import validate_email_address 
+from mail_forward_flask.message_tools import validate_email_address
 from mail_forward_flask.message_tools import InvalidEmailException
 
 class InvalidMfEmailException(Exception):
@@ -77,8 +77,8 @@ class MfEmail():
             elif fieldname in address_fields:
                 try:
                     validate_email_address(member_var)
-                except InvalidEmailException as error:
-                    error_string = "Value supplied for field '{}' is not a valid email address".format(fieldname)
+                except InvalidEmailException:
+                    error_string = "Address supplied for field '{}' is not valid.".format(fieldname)
                     email_errors.append(error_string)
 
         if email_errors:
