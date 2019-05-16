@@ -22,4 +22,59 @@ cd mail_forward/flask_app
 ./run_flask_bare.sh
 ```
 
-> Open a browser to [127.0.0.1:5000](127.0.0.1:5000)
+> Open a browser to [http://127.0.0.1:5000](http://127.0.0.1:5000/)
+
+### Running flask app locally in production mode with gunicorn
+
+> To run flask locally using gunicorn
+
+```bash
+# Download the repo
+git clone https://github.com/mflood/mail_forward
+
+# Go into the flask_app directory
+cd mail_forward/flask_app
+
+# Set up the virtual environment
+# (requires python3)
+./setup.sh
+
+# Start the flask server in developer mode
+./run_flask_gunicorn.sh
+```
+
+> Open a browser to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+
+### Running flask app in a docker container
+
+> To deploy and run the app in a docker container
+
+```bash
+# Download the repo
+git clone https://github.com/mflood/mail_forward
+
+# Go into the repo's root directory
+
+cd mail_forward
+
+# Set up the virtual environment
+# Build the docker image
+
+./docker_build.sh
+
+# Run the docker image
+
+./docker_run.sh
+```
+
+> Ensure the docker image is running
+
+    docker ps
+
+> Find the image IP address
+    
+    docker inspect <container id>
+
+> Open a browser to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+> Note: We're running the docker version on 8000 instead of 5000
