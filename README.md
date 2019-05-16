@@ -18,7 +18,7 @@ cd mail_forward/flask_app
 
 # Run tests with coverage
 ./run_coverage.sh
-
+```
 
 
 ## Starting up the service
@@ -89,11 +89,15 @@ cd mail_forward
 
 > Ensure the docker image is running
 
-    docker ps
+```bash
+docker ps
+```
 
 > Find the image IP address
     
-    docker inspect <container id>
+```bash
+docker inspect <container id>
+```
 
 > Open a browser to [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
