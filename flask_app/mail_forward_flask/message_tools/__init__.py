@@ -42,7 +42,7 @@ def validate_email_address(email):
         if not EMAIL_REGEX.match(email):
             logger.error("Email address failed validation: '%s'", email)
             raise InvalidEmailException("'{}' failed email regex")
-    except TypeError as error:
-            raise InvalidEmailException("'{}' is not a string")
+    except TypeError:
+        raise InvalidEmailException("'{}' is not a string")
 
 # end
