@@ -1,6 +1,23 @@
 # mail_forward
 
 
+## Testing
+```bash
+# Download the repo
+git clone https://github.com/mflood/mail_forward
+
+# Go into the flask_app directory
+cd mail_forward/flask_app
+
+# Set up the virtual environment
+# (requires python3)
+./setup.sh
+
+# Start the flask server in developer mode
+./run_tests.sh
+
+
+
 ## Starting up the service
 
 ### Running flask app locally in developer mode
