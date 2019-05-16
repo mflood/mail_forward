@@ -12,6 +12,8 @@ def test_bad_emails():
     with pytest.raises(InvalidEmailException):
         validate_email_address("too@many@ats.com")
     with pytest.raises(InvalidEmailException):
+        validate_email_address("too@example.com,many@example.com")
+    with pytest.raises(InvalidEmailException):
         validate_email_address("")
     with pytest.raises(InvalidEmailException):
         validate_email_address(None)
@@ -19,3 +21,6 @@ def test_bad_emails():
 def test_good_emails():
     validate_email_address("noreply@mybrightwheel.com")
     validate_email_address("fake@example.com")
+    validate_email_address("a.few.dots@example.com")
+    validate_email_address("sam@subdomain.example.com")
+    validate_email_address("a.few.dots@subdomain.example.com")
