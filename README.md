@@ -13,8 +13,11 @@ cd mail_forward/flask_app
 # (requires python3)
 ./setup.sh
 
-# Start the flask server in developer mode
+# Run tests
 ./run_tests.sh
+
+# Run tests with coverage
+./run_coverage.sh
 
 
 
