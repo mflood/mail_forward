@@ -1,5 +1,7 @@
 flask
 gunicorn
+html2text
+requests
+requests-mock
 pytest
 coverage
-html2text
