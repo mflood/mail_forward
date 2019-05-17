@@ -23,6 +23,13 @@ def test_abstract_failure():
     #  subject="Test Sub",
     #    text="Hi There.",
 
+def test_str():
+    """
+        test __str__
+    """
+    sp = ServiceProvider()
+    assert(str(sp) == "AbstractServiceProvider")
+
 def test_bad_mf_email_arg():
     """
         arg to send_message()

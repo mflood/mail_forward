@@ -22,6 +22,9 @@ class ServiceProvider():
     def __init__(self):
         self._logger = logging.getLogger(APP_LOGNAME)
 
+    def __str__(self):
+        return "AbstractServiceProvider"
+
     def concrete_send_message(self, from_address, to_address, subject, text):
         """
             This should be implemented in child class to actually send
