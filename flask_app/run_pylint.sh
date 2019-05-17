@@ -2,3 +2,4 @@ pylint mail_forward_flask/loggingsetup.py
 pylint mail_forward_flask/message_tools/__init__.py
 pylint mail_forward_flask/message_tools/mf_email.py
 pylint mail_forward_flask/__init__.py
+pylint mail_forward_flask/service_provider/__init__.py
