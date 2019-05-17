@@ -23,6 +23,10 @@ class Mailgun(ServiceProvider):
         self._domain = domain
 
     def get_mailgun_api_url(self):
+        """
+            Returns the URL use to hit the api
+            allows us to mock the url in testing
+        """
         return "https://api.mailgun.net/v3/{}/messages".format(self._domain)
 
     def concrete_send_message(self, from_address, to_address, subject, text):
