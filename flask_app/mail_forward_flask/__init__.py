@@ -13,9 +13,9 @@ from mail_forward_flask.loggingsetup import init_logging
 from mail_forward_flask.message_tools.mf_email import MfEmail
 from mail_forward_flask.message_tools.mf_email import InvalidMfEmailException
 
+from mail_forward_flask.service_provider.factory import ServiceProviderFactory
+from mail_forward_flask.service_provider.factory import ServiceProviderFactoryException
 from mail_forward_flask.service_provider import ServiceProviderException
-from mail_forward_flask.service_provider.noop import Noop
-from mail_forward_flask.service_provider.mailgun import Mailgun
 
 # lowercase app is standard name for flask app
 # pylint: disable=invalid-name
@@ -24,6 +24,10 @@ app = Flask(__name__)
 # setup logging
 init_logging(logging.DEBUG)
 logger = logging.getLogger(APP_LOGNAME)
+service_provider_factory = ServiceProviderFactory()
+service_provider_factory.configure_mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],
+                                           domain=os.environ["MF_MAILGUN_DOMAIN"])
+
 
 @app.route("/")
 def index():
@@ -47,20 +51,34 @@ def email():
 
     mf_email = MfEmail()
     try:
+
+        # Create email from request
+        #
         logger.debug("Loading MfEmail")
         mf_email.load_from_dict(dictionary=content)
         logger.debug("Validating MfEmail")
         mf_email.validate()
 
-        # build service provider
-        service_provider = Mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],
-                                   domain=os.environ["MF_MAILGUN_DOMAIN"])
+        # Build service provider
+        #
+        if os.environ["MF_DEFAULT_PROVIDER"] == "noop":
+            service_provider_factory.set_default_noop()
+        else:
+            service_provider_factory.set_default_mailgun()
+        service_provider = service_provider_factory.build_default()
         logger.debug("Using provider %s", service_provider)
-        #service_provider = Noop()
 
+        # Send message
+        #
         service_provider.send_message(mf_email=mf_email)
         logger.debug("Returning ok")
         return jsonify({"status": "ok", "provider": str(service_provider)})
+
+    except InvalidMfEmailException as error:
+        logger.error("MFEmail Error: %s Details: %s", error, error.error_list)
+        return jsonify({"status": "error",
+                        "message": str(error),
+                        "details": error.error_list})
 
     except ServiceProviderException as error:
         logger.error("ServiceProviderException: %s", error)
@@ -68,12 +86,6 @@ def email():
                         "provider": str(service_provider),
                         "message": str(error),
                         "details": []})
-
-    except InvalidMfEmailException as error:
-        logger.error("MFEmail Error: %s Details: %s", error, error.error_list)
-        return jsonify({"status": "error",
-                        "message": str(error),
-                        "details": error.error_list})
 
 
 # Uncomment this if you want to invoke the app
