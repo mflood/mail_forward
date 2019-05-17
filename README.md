@@ -13,6 +13,9 @@ cd mail_forward/flask_app
 # (requires python3)
 ./setup.sh
 
+# Run pylint
+./run_pylint.sh
+
 # Run tests
 ./run_tests.sh
 
