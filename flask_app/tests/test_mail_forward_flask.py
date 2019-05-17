@@ -48,7 +48,7 @@ def test_email_post_json(client):
     response = client.post("/email" , json=json.dumps(data), headers=headers)
 
     assert response.json["status"] == "ok"
-    assert response.json["provider"] == "noop"
+    assert response.json["provider"] in ["noop", "mailgun"]
 
 def test_email_post_text(client):
     """
@@ -60,7 +60,7 @@ def test_email_post_text(client):
         'Accept': mimetype
     }
     data = {
-        'to': "bob@example.com",
+        'to': "hermannwest@gmail.com",
         'to_name': "bob",
         'from': "fancy@example.com",
         'from_name': "fancy",
@@ -71,7 +71,7 @@ def test_email_post_text(client):
     response = client.post("/email" , data=json.dumps(data), headers=headers)
 
     assert response.json["status"] == "ok"
-    assert response.json["provider"] == "noop"
+    assert response.json["provider"] in ["noop", "mailgun"]
 
 def test_email_post_bad_json(client):
     """
