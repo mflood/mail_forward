@@ -133,4 +133,9 @@ def test_invalid_schema(req_mock):
                                  subject="jello",
                                  text="mix")
 
-
+def test_str():
+    """
+        test __str__
+    """
+    mg = Mailgun(api_key='whatever', domain='same')
+    assert(str(mg) == "mailgun")

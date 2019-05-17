@@ -22,6 +22,9 @@ class Mailgun(ServiceProvider):
         self._api_key = api_key
         self._domain = domain
 
+    def __str__(self):
+        return "mailgun"
+
     def get_mailgun_api_url(self):
         """
             Returns the URL use to hit the api
@@ -53,11 +56,11 @@ class Mailgun(ServiceProvider):
             self._logger.error(error)
             raise ServiceProviderException(error)
 
-        self._logger.info("dir response: %s", dir(response))
-        self._logger.info("response.raw: %s", response.raw)
-        self._logger.info("response.text: %s", response.text)
-        self._logger.info("response.headers: %s", response.headers)
-        self._logger.info("response.status_code: %s", response.status_code)
+        self._logger.debug("dir response: %s", dir(response))
+        self._logger.debug("response.raw: %s", response.raw)
+        self._logger.debug("response.text: %s", response.text)
+        self._logger.debug("response.headers: %s", response.headers)
+        self._logger.debug("response.status_code: %s", response.status_code)
 
         if response.status_code == 200:
             mailgun_id = response.json()["id"]
