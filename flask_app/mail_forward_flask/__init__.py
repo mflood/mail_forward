@@ -8,6 +8,8 @@ from flask import render_template
 from flask import request
 from mail_forward_flask.loggingsetup import APP_LOGNAME
 from mail_forward_flask.loggingsetup import init_logging
+from mail_forward_flask.message_tools.mf_email import MfEmail
+from mail_forward_flask.message_tools.mf_email import InvalidMfEmailException
 
 # lowercase app is standard name for flask app
 # pylint: disable=invalid-name
@@ -32,7 +34,20 @@ def email():
         endpoint to forward mail
     """
     content = request.get_json(silent=True)
-    print(content)
+    logger.debug("Request content: %s", content)
+    mf_email = MfEmail()
+    try:
+        logger.debug("Loading MfEmail")
+        mf_email.load_from_json(json_string=content)
+        logger.debug("Validating MfEmail")
+        mf_email.validate()
+    except InvalidMfEmailException as error:
+        logger.error("MFEmail Error: %s Details: %s", error, error.error_list)
+        return jsonify({"status": "error",
+                        "message": ["error"],
+                        "details": error.error_list})
+
+    logger.debug("Returning ok")
     return jsonify({"status": "ok", "provider": "noop"})
 
 # Uncomment this if you want to invoke the app

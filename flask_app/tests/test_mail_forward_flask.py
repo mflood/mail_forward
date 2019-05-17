@@ -42,10 +42,30 @@ def test_email_post(client):
         'from': "fancy@example.com",
         'from_name': "fancy",
         'subject': "A Subject.",
-        'text': "A message.",
+        'body': "A message.",
     }
 
     response = client.post("/email" , json=json.dumps(data), headers=headers)
 
     assert response.json["status"] == "ok"
     assert response.json["provider"] == "noop"
+
+def test_email_post_bad_json(client):
+    """
+        Test happy missing fields
+    """
+    mimetype = 'application/json'
+    headers = {
+        'Content-Type': mimetype,
+        'Accept': mimetype
+    }
+    data = {
+        'to': "bob@example.com",
+        'from_name': "fancy",
+        'subject': "A Subject.",
+        'body': "A message.",
+    }
+
+    response = client.post("/email" , json=json.dumps(data), headers=headers)
+
+    assert response.json["status"] == "error"
