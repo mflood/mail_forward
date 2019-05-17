@@ -2,6 +2,7 @@
     Flask App for mail_forward
 """
 import logging
+import json
 from flask import Flask
 from flask import jsonify
 from flask import render_template
@@ -34,11 +35,12 @@ def email():
         endpoint to forward mail
     """
     content = request.get_json(silent=True)
-    logger.debug("Request content: %s", content)
+    as_dict = json.loads(content)
+    logger.debug("Request content (%s): %s", type(as_dict), as_dict)
     mf_email = MfEmail()
     try:
         logger.debug("Loading MfEmail")
-        mf_email.load_from_json(json_string=content)
+        mf_email.load_from_dict(dictionary=as_dict)
         logger.debug("Validating MfEmail")
         mf_email.validate()
     except InvalidMfEmailException as error:

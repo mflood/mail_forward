@@ -6,9 +6,8 @@ from mail_forward_flask.message_tools.mf_email import make_email_address
 
 
 
-def get_test_json():
-    json_string = """
-    {
+def get_test_dictionary():
+    dictionary = {
         "to": "fake@example.com",
         "to_name": "Mr. Fake",
         "from": "noreply@mybrightwheel.com", 
@@ -16,13 +15,11 @@ def get_test_json():
         "subject": "A Message from Brightwheel", 
         "body": "<h1>Your Bill</h1><p>$10</p>"
     }
-    """
-    return json_string
+    return dictionary
 
 
-def get_plaintext_test_json():
-    json_string = """
-    {
+def get_plaintext_dictionary():
+    dictionary = {
         "to": "fake@example.com",
         "to_name": "Mr. Fake",
         "from": "noreply@mybrightwheel.com", 
@@ -30,8 +27,7 @@ def get_plaintext_test_json():
         "subject": "A Message from Brightwheel", 
         "body": "You're Bill"
     }
-    """
-    return json_string
+    return dictionary
 
 
 def test_constructor():
@@ -40,7 +36,7 @@ def test_constructor():
 
 def test_load_from_json():
     mf_email = MfEmail()
-    mf_email.load_from_json(json_string=get_test_json())
+    mf_email.load_from_dict(dictionary=get_test_dictionary())
 
     assert mf_email.get_full_address_to() == "Mr. Fake <fake@example.com>"
     assert mf_email.get_full_address_from() == "Brightwheel <noreply@mybrightwheel.com>"
@@ -49,42 +45,46 @@ def test_load_from_json():
 
 def test_plaintext_body():
     mf_email = MfEmail()
-    json_string = get_plaintext_test_json()
-    mf_email.load_from_json(json_string=json_string)
+    dictionary = get_plaintext_dictionary()
+    mf_email.load_from_dict(dictionary=dictionary)
     # 
     assert mf_email.get_text() == "You're Bill"
 
 def test_load_from_json_failure():
     mf_email = MfEmail()
-    with pytest.raises(InvalidMfEmailException):
-        mf_email.load_from_json(json_string=None)
-    with pytest.raises(InvalidMfEmailException):
-        mf_email.load_from_json(json_string="hello: af")
+    with pytest.raises(AssertionError):
+        mf_email.load_from_dict(dictionary=None)
+    with pytest.raises(AssertionError):
+        mf_email.load_from_dict(dictionary="hello: af")
 
 def test_validate_success():
     mf_email = MfEmail()
-    mf_email.load_from_json(json_string=get_test_json())
+    mf_email.load_from_dict(dictionary=get_test_dictionary())
     mf_email.validate()
 
 def test_missing_field():
     mf_email = MfEmail()
-    json_string = get_test_json()
+    dictionary = get_test_dictionary()
 
-    # from_name is required, change it to some other name
-    json_string = json_string.replace("from_name", "from_gnome")
+    # from_name is required, remove it
+    del dictionary["from_name"]
 
-    mf_email.load_from_json(json_string=json_string)
+    # subject is required, make it blank
+    dictionary["subject"] = ""
+
+    mf_email.load_from_dict(dictionary=dictionary)
     with pytest.raises(InvalidMfEmailException):
         mf_email.validate()
 
 def test_invalid_email():
     mf_email = MfEmail()
-    json_string = get_test_json()
+    dictionary = get_test_dictionary()
 
     # change all '@' signs to '+'
-    json_string = json_string.replace("@", "+")
+    dictionary["from"] = "invalid.email"
+    dictionary["to"] = "another@invalid_email"
 
-    mf_email.load_from_json(json_string=json_string)
+    mf_email.load_from_dict(dictionary=dictionary)
     with pytest.raises(InvalidMfEmailException):
         mf_email.validate()
 

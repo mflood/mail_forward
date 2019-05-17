@@ -4,10 +4,10 @@
 
     provides
      - validation
-     - loading from json message
+     - loading from dictionardictionary
 """
-import json
-from json.decoder import JSONDecodeError
+import logging
+from mail_forward_flask.loggingsetup import APP_LOGNAME
 from mail_forward_flask.message_tools import convert_html_to_text
 from mail_forward_flask.message_tools import validate_email_address
 from mail_forward_flask.message_tools import InvalidEmailException
@@ -68,23 +68,21 @@ class MfEmail():
         self._from_name = ""
         self._subject = ""
         self._body = ""
+        self._logger = logging.getLogger(APP_LOGNAME)
 
-    def load_from_json(self, json_string):
+    def load_from_dict(self, dictionary):
         """
-            Loads member variables from json string
+            Loads member variables from dictionary
         """
-        try:
-            as_object = json.loads(json_string)
-            self._to_address = as_object.get("to", "").strip()
-            self._to_name = as_object.get("to_name", "").strip()
-            self._from_address = as_object.get("from", "").strip()
-            self._from_name = as_object.get("from_name", "").strip()
-            self._subject = as_object.get("subject", "").strip()
-            self._body = as_object.get("body", "").strip()
-        except TypeError as error:
-            raise InvalidMfEmailException("Could not decode json: {}".format(error), [])
-        except JSONDecodeError as error:
-            raise InvalidMfEmailException("Could not decode json: {}".format(error), [])
+        self._logger.debug("load_from_dict is type: %s", type(dictionary))
+        assert isinstance(dictionary, dict)
+
+        self._to_address = dictionary.get("to", "").strip()
+        self._to_name = dictionary.get("to_name", "").strip()
+        self._from_address = dictionary.get("from", "").strip()
+        self._from_name = dictionary.get("from_name", "").strip()
+        self._subject = dictionary.get("subject", "").strip()
+        self._body = dictionary.get("body", "").strip()
 
     def validate(self):
         """
