@@ -37,7 +37,7 @@ def test_email_post_json(client):
         'Accept': mimetype
     }
     data = {
-        'to': "bob@example.com",
+        'to': "hermannwest@gmail.com",
         'to_name': "bob",
         'from': "fancy@example.com",
         'from_name': "fancy",
