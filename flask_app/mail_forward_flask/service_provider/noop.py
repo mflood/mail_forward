@@ -18,15 +18,18 @@ class Noop(ServiceProvider):
         super(Noop, self).__init__()
         self._logger = logging.getLogger(APP_LOGNAME)
 
+    def __str__(self):
+        return "noop"
+
     def concrete_send_message(self, from_address, to_address, subject, text):
         """
             implementation of send_message
             just prints out args
         """
-        self._logger.info("Noop send_simple_message")
-        self._logger.info("from: %s", from_address)
-        self._logger.info("to: %s", to_address)
-        self._logger.info("subject: %s", subject)
-        self._logger.info("body: %s", text)
+        self._logger.debug("Noop send_simple_message")
+        self._logger.debug("from: %s", from_address)
+        self._logger.debug("to: %s", to_address)
+        self._logger.debug("subject: %s", subject)
+        self._logger.debug("body: %s", text)
 
 #end

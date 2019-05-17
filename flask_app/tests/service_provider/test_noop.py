@@ -19,3 +19,10 @@ def test_send_message():
     sp = sp.send_message(mf_email=MfEmail())
 
 
+def test_str():
+    """
+        test __str__
+    """
+    sp = Noop()
+    assert(str(sp) == "noop")
+
