@@ -12,6 +12,7 @@ class ServiceProviderException(Exception):
     """
     pass
 
+# pylint: disable=too-few-public-methods
 class ServiceProvider():
     """
         Abstract class represeting
