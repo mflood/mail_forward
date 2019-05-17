@@ -62,12 +62,12 @@ class MfEmail():
     """
 
     def __init__(self):
-        self._to_address = None
-        self._to_name = None
-        self._from_address = None
-        self._from_name = None
-        self._subject = None
-        self._body = None
+        self._to_address = ""
+        self._to_name = ""
+        self._from_address = ""
+        self._from_name = ""
+        self._subject = ""
+        self._body = ""
 
     def load_from_json(self, json_string):
         """
