@@ -89,8 +89,9 @@ if __name__ == "__main__":
     #    export MAILGUN_API_KEY='YOUR_API_KEY'
     #    export MAILGUN_DOMAIN='YOUR_DOMAIN'
     import os                                                       # pragma: no cover
-    mg = Mailgun(api_key=os.environ["MAILGUN_API_KEY"],             # pragma: no cover
-                 domain=os.environ["MAILGUN_DOMAIN"])               # pragma: no cover
+
+    mg = Mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],             # pragma: no cover
+                 domain=os.environ["MF_MAILGUN_DOMAIN"])               # pragma: no cover
 
     mg.concrete_send_message(from_address="hermannwest@gmail.com",  # pragma: no cover
                              to_address="hermannwest@gmail.com",    # pragma: no cover
