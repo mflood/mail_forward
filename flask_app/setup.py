@@ -11,5 +11,6 @@ setup(name='mail_forward_flask',
       packages=['mail_forward_flask'],
       install_requires=[
           'html2text',
+          'requests',
       ],
      )
