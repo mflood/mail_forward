@@ -22,19 +22,19 @@ class ServiceProvider():
     def __init__(self):
         self._logger = logging.getLogger(APP_LOGNAME)
 
-    def _concrete_send_message(self, from_address, to_address, subject, text):
+    def concrete_send_message(self, from_address, to_address, subject, text):
         """
             This should be implemented in child class to actually send
             an email
 
             Delivery problems should propagate up using ServiceProviderException
         """
-        self._logger.debug("abstract _concrete_send_message: from address: '%s'", from_address)
-        self._logger.debug("abstract _concrete_send_message: to address: '%s'", to_address)
-        self._logger.debug("abstract _concrete_send_message: subject: '%s'", subject)
-        self._logger.debug("abstract _concrete_send_message: body: '%s'", text)
+        self._logger.debug("abstract concrete_send_message: from address: '%s'", from_address)
+        self._logger.debug("abstract concrete_send_message: to address: '%s'", to_address)
+        self._logger.debug("abstract concrete_send_message: subject: '%s'", subject)
+        self._logger.debug("abstract concrete_send_message: body: '%s'", text)
 
-        raise ServiceProviderException("_concrete_send_message not implemented")
+        raise ServiceProviderException("concrete_send_message not implemented")
 
     def send_message(self, mf_email):
         """
@@ -55,9 +55,9 @@ class ServiceProvider():
         self._logger.debug("body: '%s'", text)
 
         # this method needs to exist in descendants
-        self._concrete_send_message(from_address=from_address,
-                                    to_address=to_address,
-                                    subject=subject,
-                                    text=text)
+        self.concrete_send_message(from_address=from_address,
+                                   to_address=to_address,
+                                   subject=subject,
+                                   text=text)
 
 # end

@@ -18,7 +18,7 @@ class Noop(ServiceProvider):
         super(Noop, self).__init__()
         self._logger = logging.getLogger(APP_LOGNAME)
 
-    def _concrete_send_message(self, from_address, to_address, subject, text):
+    def concrete_send_message(self, from_address, to_address, subject, text):
         """
             implementation of send_message
             just prints out args
