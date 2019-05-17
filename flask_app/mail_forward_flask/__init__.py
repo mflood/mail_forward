@@ -12,6 +12,9 @@ from mail_forward_flask.loggingsetup import init_logging
 from mail_forward_flask.message_tools.mf_email import MfEmail
 from mail_forward_flask.message_tools.mf_email import InvalidMfEmailException
 
+from mail_forward_flask.service_provider.noop import Noop
+from mail_forward_flask.service_provider.mailgun import Mailgun
+
 # lowercase app is standard name for flask app
 # pylint: disable=invalid-name
 app = Flask(__name__)
@@ -34,15 +37,24 @@ def email():
     """
         endpoint to forward mail
     """
-    content = request.get_json(silent=True)
-    as_dict = json.loads(content)
-    logger.debug("Request content (%s): %s", type(as_dict), as_dict)
+    #content = request.get_json(silent=True)
+    content = request.json
+    logger.debug("Incoming request content (%s): %s", type(content), content)
+    if isinstance(content, str):
+        content = json.loads(content)
+        
     mf_email = MfEmail()
     try:
         logger.debug("Loading MfEmail")
-        mf_email.load_from_dict(dictionary=as_dict)
+        mf_email.load_from_dict(dictionary=content)
         logger.debug("Validating MfEmail")
         mf_email.validate()
+
+        # build service provider
+        #service_provider = MailGun(api_key=os.environ["MF_MAILGUN_API_KEY"],
+        #                            domain=os.environ["MF_MAILGUN_DOMAIN"]))
+        service_provider = Noop()
+        service_provider.send_message(mf_email=mf_email)
     except InvalidMfEmailException as error:
         logger.error("MFEmail Error: %s Details: %s", error, error.error_list)
         return jsonify({"status": "error",

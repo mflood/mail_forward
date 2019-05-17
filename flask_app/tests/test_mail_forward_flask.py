@@ -27,7 +27,7 @@ def test_home_page(client):
     rv = client.get('/')
     assert b'ola' in rv.data
 
-def test_email_post(client):
+def test_email_post_json(client):
     """
         Test happy path /email
     """
@@ -46,6 +46,29 @@ def test_email_post(client):
     }
 
     response = client.post("/email" , json=json.dumps(data), headers=headers)
+
+    assert response.json["status"] == "ok"
+    assert response.json["provider"] == "noop"
+
+def test_email_post_text(client):
+    """
+        Test happy path /email
+    """
+    mimetype = 'application/json'
+    headers = {
+        'Content-Type': mimetype,
+        'Accept': mimetype
+    }
+    data = {
+        'to': "bob@example.com",
+        'to_name': "bob",
+        'from': "fancy@example.com",
+        'from_name': "fancy",
+        'subject': "A Subject.",
+        'body': "A message.",
+    }
+
+    response = client.post("/email" , data=json.dumps(data), headers=headers)
 
     assert response.json["status"] == "ok"
     assert response.json["provider"] == "noop"
