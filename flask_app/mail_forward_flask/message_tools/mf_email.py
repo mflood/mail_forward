@@ -8,8 +8,10 @@
 """
 import json
 from json.decoder import JSONDecodeError
+from mail_forward_flask.message_tools import convert_html_to_text
 from mail_forward_flask.message_tools import validate_email_address
 from mail_forward_flask.message_tools import InvalidEmailException
+
 
 class InvalidMfEmailException(Exception):
     """
@@ -24,15 +26,45 @@ class InvalidMfEmailException(Exception):
         super(InvalidMfEmailException, self).__init__(message)
         self.error_list = email_errors
 
+
+def make_email_address(name, address):
+    """
+        Given a name like 'Bob'
+        and an address like 'bob@example.com'
+        returns "Bob <bob@example.com>"
+    """
+
+    # if email address is already
+    # wrapped in angle brackets, remove them
+    if address:
+        address = address.strip('<>')
+        address = address.strip()
+    else:
+        # we don't want "None" ending up as the email
+        address = ""
+
+    if name:
+        name = name.strip()
+    else:
+        # we don't want "None" ending up as the name
+        name = ""
+
+
+    if name and address:
+        return "{} <{}>".format(name, address)
+
+    # if no name, just return the stripped email
+    return "{}".format(address)
+
 class MfEmail():
     """
         Represents Email to be Forward
     """
 
     def __init__(self):
-        self._to = None
+        self._to_address = None
         self._to_name = None
-        self._from = None
+        self._from_address = None
         self._from_name = None
         self._subject = None
         self._body = None
@@ -43,12 +75,12 @@ class MfEmail():
         """
         try:
             as_object = json.loads(json_string)
-            self._to = as_object.get("to")
-            self._to_name = as_object.get("to_name")
-            self._from = as_object.get("from")
-            self._from_name = as_object.get("from_name")
-            self._subject = as_object.get("subject")
-            self._body = as_object.get("body")
+            self._to_address = as_object.get("to", "").strip()
+            self._to_name = as_object.get("to_name", "").strip()
+            self._from_address = as_object.get("from", "").strip()
+            self._from_name = as_object.get("from_name", "").strip()
+            self._subject = as_object.get("subject", "").strip()
+            self._body = as_object.get("body", "").strip()
         except TypeError as error:
             raise InvalidMfEmailException("Could not decode json: {}".format(error), [])
         except JSONDecodeError as error:
@@ -62,9 +94,11 @@ class MfEmail():
 
         email_errors = []
         address_fields = ['to', 'from']
-        required_fields = [(self._to, 'to'),
+
+        # these fields need to be present and populated in json
+        required_fields = [(self._to_address, 'to'),
                            (self._to_name, 'to_name'),
-                           (self._from, 'from'),
+                           (self._from_address, 'from'),
                            (self._from_name, 'from_name'),
                            (self._subject, 'subject'),
                            (self._body, 'body'),
@@ -85,17 +119,40 @@ class MfEmail():
             message = "Missing fields"
             raise InvalidMfEmailException(message, email_errors)
 
-    def as_dict(self):
+    def get_subject(self):
         """
-            Getter for all member variables
+            getter for subject
         """
-        return {
-            'to': self._to,
-            'to_name': self._to_name,
-            'from': self._from,
-            'from_name': self._from_name,
-            'subject': self._subject,
-            'body': self._body,
-        }
+        return self._subject
+
+    def get_text(self):
+        """
+            Returns plaintext version of body
+        """
+        # pseudo detect HTML
+        if "<" in self._body and ">" in self._body:
+            return convert_html_to_text(self._body)
+
+        return self._body
+
+    def get_full_address_to(self):
+        """
+            getter for "to" address
+            constructs and returns a full email address
+            from name and email
+        """
+        to_address = make_email_address(name=self._to_name,
+                                        address=self._to_address)
+        return to_address
+
+    def get_full_address_from(self):
+        """
+            getter for "from" address
+            constructs and returns a full email address
+            from name and email
+        """
+        from_address = make_email_address(name=self._from_name,
+                                          address=self._from_address)
+        return from_address
 
 # end
