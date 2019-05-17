@@ -3,7 +3,9 @@
 """
 import logging
 from flask import Flask
+from flask import jsonify
 from flask import render_template
+from flask import request
 from mail_forward_flask.loggingsetup import APP_LOGNAME
 from mail_forward_flask.loggingsetup import init_logging
 
@@ -22,6 +24,16 @@ def index():
     """
     logger.debug("Rendering index.html")
     return render_template('index.html')
+
+
+@app.route('/email', methods=['POST'])
+def email():
+    """
+        endpoint to forward mail
+    """
+    content = request.get_json(silent=True)
+    print(content)
+    return jsonify({"status": "ok", "provider": "noop"})
 
 # Uncomment this if you want to invoke the app
 # using:
