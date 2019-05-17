@@ -1,4 +1,3 @@
-
 import pytest
 from mail_forward_flask.message_tools.mf_email import MfEmail
 from mail_forward_flask.service_provider import ServiceProviderException
