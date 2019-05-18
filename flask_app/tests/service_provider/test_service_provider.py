@@ -8,7 +8,7 @@ def test_constructor():
 
 def test_abstract_failure():
     """
-        Can't call _concrete_send_message
+        Can't call concrete_send_message
         on abstract class
     """
     sp = ServiceProvider()

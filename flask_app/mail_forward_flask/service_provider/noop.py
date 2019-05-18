@@ -21,15 +21,11 @@ class Noop(ServiceProvider):
     def __str__(self):
         return "noop"
 
-    def concrete_send_message(self, from_address, to_address, subject, text):
+    def concrete_send_message(self, mf_email):
         """
             implementation of send_message
             just prints out args
         """
-        self._logger.debug("Noop send_simple_message")
-        self._logger.debug("from: %s", from_address)
-        self._logger.debug("to: %s", to_address)
-        self._logger.debug("subject: %s", subject)
-        self._logger.debug("body: %s", text)
+        self._logger.debug("Noop send_simple_message: %s", mf_email)
 
 #end

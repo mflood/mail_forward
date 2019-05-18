@@ -133,6 +133,30 @@ class MfEmail():
 
         return self._body
 
+    def get_from_address(self):
+        """
+            getter for "from" address
+        """
+        return self._from_address
+
+    def get_to_address(self):
+        """
+            getter for "to" address
+        """
+        return self._to_address
+
+    def get_from_name(self):
+        """
+            getter for "from" name
+        """
+        return self._from_name
+
+    def get_to_name(self):
+        """
+            getter for "to" name
+        """
+        return self._to_name
+
     def get_full_address_to(self):
         """
             getter for "to" address

@@ -32,21 +32,20 @@ class Mailgun(ServiceProvider):
         """
         return "https://api.mailgun.net/v3/{}/messages".format(self._domain)
 
-    def concrete_send_message(self, from_address, to_address, subject, text):
+    def concrete_send_message(self, mf_email):
         """
             Send message using mailgun API
             This is called by base class when send_message(mf_email) is invoked
             Throws ServiceProviderException if the api call fails
         """
-
         try:
             response = requests.post(
                 self.get_mailgun_api_url(),
                 auth=("api", self._api_key),
-                data={"from": from_address,
-                      "to": [to_address],
-                      "subject": subject,
-                      "text": text})
+                data={"from": mf_email.get_full_address_from(),
+                      "to": [mf_email.get_full_address_to()],
+                      "subject": mf_email.get_subject(),
+                      "text": mf_email.get_text})
 
         except requests.exceptions.ConnectionError as error:
             self._logger.error(error)
@@ -88,13 +87,22 @@ if __name__ == "__main__":
     #
     #    export MAILGUN_API_KEY='YOUR_API_KEY'
     #    export MAILGUN_DOMAIN='YOUR_DOMAIN'
-    import os                                                       # pragma: no cover
 
-    mg = Mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],             # pragma: no cover
-                 domain=os.environ["MF_MAILGUN_DOMAIN"])               # pragma: no cover
+    import os                                                     # pragma: no cover
+    from mail_forward_flask.message_tools.mf_email import MfEmail # pragma: no cover
 
-    mg.concrete_send_message(from_address="hermannwest@gmail.com",  # pragma: no cover
-                             to_address="hermannwest@gmail.com",    # pragma: no cover
-                             subject="my test",                     # pragma: no cover
-                             text="hi there.")                      # pragma: no cover
+    info_dict = {                                                 # pragma: no cover
+        "from_name": "Fox",                                       # pragma: no cover
+        "from_address": "hermannwest@gmail.com",                  # pragma: no cover
+        "to_name": "Tom",                                         # pragma: no cover
+        "to_address": "hermannwest@gmail.com",                    # pragma: no cover
+        "subject": "You won't believe what's in this email",      # pragma: no cover
+        "text": "<b>Bold Content</b>"                             # pragma: no cover
+    }                                                             # pragma: no cover
+
+    email = MfEmail()                                             # pragma: no cover
+    email.load_from_dict(dictionary=info_dict)                    # pragma: no cover
+    mg = Mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],        # pragma: no cover
+                 domain=os.environ["MF_MAILGUN_DOMAIN"])          # pragma: no cover
+    mg.concrete_send_message(mf_email=email)                      # pragma: no cover
 # end
