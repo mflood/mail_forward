@@ -28,7 +28,7 @@ def test_constructor():
     """
         test creating object
     """
-    sp = Mandrill(api_key="hi", domain="bye")
+    sp = Mandrill(api_key="hi")
 
 
 def test_send_message(req_mock):
@@ -36,12 +36,17 @@ def test_send_message(req_mock):
     """
 
     mock_response = """
-        {
-          "id": "<MOCK.1.MOCK@sandbox4c3ae61c920d473d8e9ead8dd265bc92.mock.org>",
-          "message": "Queued (MOCK). Thank you."
-        }"""
+        [
+            {
+                "email": "recipient.email@example.com",
+                "status": "queued",
+                "_id": "42461e9aa82a4871a0c9a1fab2d5bb6c",
+                "reject_reason": null
+            }
+        ]
+        """
 
-    mg = Mandrill(api_key='passthejam', domain='butter')
+    mg = Mandrill(api_key='passthejam')
     api_url = mg.get_mandrill_api_url()
 
     # this sets up the maildog api_url with a mock response
@@ -58,10 +63,14 @@ def test_404_json_response(req_mock):
 
     mock_response = """
         {
-          "message": "Something went horribly wrong."
-        }"""
+            "status": "error",
+            "code": -2,
+            "name": "ValidationError",
+            "message": "Validation error: {\"message\":{\"from_email\":\"An email address must contain a single @\"}}"
+        }
+        """
 
-    mg = Mandrill(api_key='passthejam', domain='butter')
+    mg = Mandrill(api_key='passthejam')
     api_url = mg.get_mandrill_api_url()
 
     # this sets up the maildog api_url with a mock response
@@ -80,7 +89,7 @@ def test_404_text_response(req_mock):
 
     mock_response = """The world is ending"""
 
-    mg = Mandrill(api_key='passthejam', domain='butter')
+    mg = Mandrill(api_key='passthejam')
     api_url = mg.get_mandrill_api_url()
 
     # this sets up the maildog api_url with a mock response
@@ -100,7 +109,7 @@ def test_connection_error(req_mock):
 
     mock_response = """The world is ending"""
 
-    mg = Mandrill(api_key='passthejam', domain='butter')
+    mg = Mandrill(api_key='passthejam')
     api_url = mg.get_mandrill_api_url()
 
     # this sets up the maildog api_url with a mock response
@@ -120,7 +129,7 @@ def test_invalid_schema(req_mock):
 
     mock_response = """The world is ending"""
 
-    mg = Mandrill(api_key='passthejam', domain='butter')
+    mg = Mandrill(api_key='passthejam')
     api_url = mg.get_mandrill_api_url()
 
     # this sets up the maildog api_url with a mock response
@@ -137,5 +146,5 @@ def test_str():
     """
         test __str__
     """
-    mg = Mandrill(api_key='whatever', domain='same')
+    mg = Mandrill(api_key='whatever')
     assert(str(mg) == "mandrill")

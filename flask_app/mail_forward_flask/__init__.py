@@ -1,5 +1,14 @@
 """
     Flask App for mail_forward
+
+
+Environment Variables:
+
+    MF_MAILGUN_API_KEY
+    MF_MAILGUN_DOMAIN
+    MF_MANDRILL_API_KEY
+    MF_DEFAULT_PROVIDER (can be noop, mailgun, mandrill - defaults to mailgun)
+
 """
 import logging
 import json
@@ -24,9 +33,12 @@ app = Flask(__name__)
 # setup logging
 init_logging(logging.DEBUG)
 logger = logging.getLogger(APP_LOGNAME)
+
+# configure servicde provider
 service_provider_factory = ServiceProviderFactory()
 service_provider_factory.configure_mailgun(api_key=os.environ["MF_MAILGUN_API_KEY"],
                                            domain=os.environ["MF_MAILGUN_DOMAIN"])
+service_provider_factory.configure_mandrill(api_key=os.environ["MF_MANDRILL_API_KEY"])
 
 
 @app.route("/")
@@ -63,6 +75,8 @@ def email():
         #
         if os.environ["MF_DEFAULT_PROVIDER"] == "noop":
             service_provider_factory.set_default_noop()
+        elif os.environ["MF_DEFAULT_PROVIDER"] == "mandrill":
+            service_provider_factory.set_default_mandrill()
         else:
             service_provider_factory.set_default_mailgun()
         service_provider = service_provider_factory.build_default()

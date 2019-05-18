@@ -2,6 +2,7 @@
     mandrill.py
 """
 import logging
+import json
 from json.decoder import JSONDecodeError
 import requests
 from mail_forward_flask.loggingsetup import APP_LOGNAME
@@ -14,39 +15,61 @@ class Mandrill(ServiceProvider):
         sends mail through mandrill
     """
 
-    def __init__(self, api_key, domain):
+    def __init__(self, api_key):
 
         super(Mandrill, self).__init__()
 
         self._logger = logging.getLogger(APP_LOGNAME)
         self._api_key = api_key
-        self._domain = domain
 
     def __str__(self):
         return "mandrill"
 
+    # pylint: disable=no-self-use
     def get_mandrill_api_url(self):
         """
             Returns the URL use to hit the api
             allows us to mock the url in testing
         """
-        return "https://api.mailgun.net/v3/{}/messages".format(self._domain)
+        return "https://mandrillapp.com/api/1.0/messages/send.json"
 
     def concrete_send_message(self, from_address, to_address, subject, text):
         """
             Send message using mandrill API
             This is called by base class when send_message(mf_email) is invoked
             Throws ServiceProviderException if the api call fails
+
+curl -A  'Mandrill-Curl/1.0' -d '{
+    "key": "API-KEY",
+    "message": {
+        "text": "Example text content",
+        "subject": "example subject",
+        "from_email": "message.from_email@example.com",
+        "from_name": "Example Name",
+        "to": [
+            {
+                "email": "recipient.email@example.com",
+                "name": "Recipient Name",
+                "type": "to"
+            }
+        ]
+    }
         """
 
         try:
             response = requests.post(
                 self.get_mandrill_api_url(),
-                auth=("api", self._api_key),
-                data={"from": from_address,
-                      "to": [to_address],
-                      "subject": subject,
-                      "text": text})
+                data=json.dumps({"key": self._api_key,
+                                 "message": {
+                                     "text": text,
+                                     "subject": subject,
+                                     "from_email": "hermannwest@gmail.com",
+                                     "from_name": "matt",
+                                     "to": [{
+                                         "email": "Bill",
+                                         "name": "hermannwest@gmail.com",
+                                         "type": "to"
+                                     }],}}))
 
         except requests.exceptions.ConnectionError as error:
             self._logger.error(error)
@@ -63,9 +86,16 @@ class Mandrill(ServiceProvider):
         self._logger.debug("response.status_code: %s", response.status_code)
 
         if response.status_code == 200:
-            mandrill_id = response.json()["id"]
-            mandrill_message = response.json()["message"]
-            self._logger.info("Sent mandrill message. %s: %s", mandrill_id, mandrill_message)
+            mandrill_id = response.json()[0]["_id"]
+            mandrill_status = response.json()[0]["status"]
+
+            if response.json()[0]["status"] == "invalid":
+                error_message = ("Code {} Failed to send mandrill message: "
+                                 "{}".format(response.status_code, mandrill_status))
+                self._logger.error(error_message)
+                raise ServiceProviderException(error_message)
+            else:
+                self._logger.info("Sent mandrill message. %s: %s", mandrill_id, mandrill_status)
 
         else:
             try:
@@ -89,8 +119,7 @@ if __name__ == "__main__":
     #    export MAILGUN_API_KEY='YOUR_API_KEY'
     #    export MAILGUN_DOMAIN='YOUR_DOMAIN'
     import os                                                       # pragma: no cover
-    mg = Mandrill(api_key=os.environ["MF_MAILGUN_API_KEY"],             # pragma: no cover
-                 domain=os.environ["MF_MAILGUN_DOMAIN"])               # pragma: no cover
+    mg = Mandrill(api_key=os.environ["MF_MANDRILL_API_KEY"])        # pragma: no cover
     mg.concrete_send_message(from_address="hermannwest@gmail.com",  # pragma: no cover
                              to_address="hermannwest@gmail.com",    # pragma: no cover
                              subject="my test",                     # pragma: no cover
