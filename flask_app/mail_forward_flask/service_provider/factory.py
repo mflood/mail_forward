@@ -52,6 +52,8 @@ class ServiceProviderFactory():
             Sets configuration info needed to
             instantiate Mailgun instance
         """
+        self._logger.debug("Configuring mailgun api_key %s... domain %s...",
+                           api_key[:5], domain[:5])
         self._mailgun_api_key = api_key
         self._mailgun_domain = domain
 
@@ -60,6 +62,7 @@ class ServiceProviderFactory():
             Sets configuration info needed to
             instantiate Mandrill instance
         """
+        self._logger.debug("Configuring mandril with api_key %s...", api_key[:6])
         self._mandrill_api_key = api_key
 
     def build_mailgun(self):
