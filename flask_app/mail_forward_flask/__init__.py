@@ -55,7 +55,22 @@ def email():
     """
         endpoint to forward mail
     """
+    content_type = request.content_type.lower()
+    if "application/json" not in content_type:
+        logger.error("Received content_type: %s", content_type)
+        return jsonify({"status": "error",
+                        "message": "content_type needs to be application/json"})
+
+
     #content = request.get_json(silent=True)
+    #logger.debug("dir(request) {}".format(dir(request)))
+    #logger.debug("data {}".format(request.data))
+    #logger.debug("get_data {}".format(request.get_data()))
+    #logger.debug("headers {}".format(request.headers))
+    #logger.debug("content_type {}".format(request.content_type))
+    #logger.debug("full_path {}".format(request.full_path))
+    #logger.debug("endpoint {}".format(request.endpoint))
+    #logger.debug("query_string {}".format(request.query_string))
     content = request.json
     logger.debug("Incoming request content (%s): %s", type(content), content)
     if isinstance(content, str):

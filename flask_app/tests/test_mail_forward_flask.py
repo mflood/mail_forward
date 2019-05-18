@@ -25,7 +25,7 @@ def test_home_page(client):
         Test that we're getting the index.html template
     """
     rv = client.get('/')
-    assert b'ola' in rv.data
+    assert b'dQw4w9WgXcQ' in rv.data
 
 def test_email_post_json(client):
     """
