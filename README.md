@@ -1,6 +1,5 @@
 # mail_forward
 
-
 ## Testing
 ```bash
 # Download the repo
@@ -41,6 +40,11 @@ cd mail_forward/flask_app
 # (requires python3)
 ./setup.sh
 
+# set env variables for mailgun and mandrill
+# or use noop as default service provider
+vim envs.sh
+source envs.sh
+
 # Start the flask server in developer mode
 ./run_flask_bare.sh
 ```
@@ -62,6 +66,11 @@ cd mail_forward/flask_app
 # (requires python3)
 ./setup.sh
 
+# set env variables for mailgun and mandrill
+# or use noop as default service provider
+vim envs.sh
+source envs.sh
+
 # Start the flask server in developer mode
 ./run_flask_gunicorn.sh
 ```
@@ -80,10 +89,13 @@ git clone https://github.com/mflood/mail_forward
 
 cd mail_forward
 
-# Set up the virtual environment
 # Build the docker image
 
 ./docker_build.sh
+
+# Set enviroment variables for mailgun and mandrill
+
+vim docker.env
 
 # Run the docker image
 
