@@ -1,4 +1,4 @@
-# mail_forward (Brightwheel Coding Challenge)
+# mail_forward
 
 
 ## Language / Framework
