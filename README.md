@@ -12,18 +12,6 @@ Brightwheel Coding Challenge
 > 
 > Likewise, I got lucky with **html2text** as the first module I found that seemed to work nicely for converting HTML to text.
 
-## Tradeoffs / Things left out
-> I did not get around to mocking out hitting the apis for the **/email** endpoint, which means unit tests for that endpoint are actually live integration tests, which means those tests may pass or fail depending on the current ENV.  It should succeed if the environment is setup for mailgun.
-
-> There are also a few code blocks that I did not get around to testing, so the unit tests do not have 100% code coverage.
-
-> Given more time, I would like to figure out a better strategy for configuration / environment variable setup.
-
-> I did not yet pylint the unit tests and I have not run pep8 against the code.
-
-> Given more time, I would like to spin up an EC2 instance and try this out there, since I have been testing exclusivey from my Mac and Docker. 
-
-> I was not able to complete my domain setup for Mandrill, so my API test for that never actually worked, except for the failure cases.
 
 ## Testing
 ```bash
