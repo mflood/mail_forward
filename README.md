@@ -1,6 +1,6 @@
 # mail_forward
 
-Brightwheel Coding Challenge
+This is my submission for the Brightwheel Coding Challenge
 
 ## Language / Framework
 
